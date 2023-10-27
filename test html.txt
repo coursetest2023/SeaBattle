@@ -1,0 +1,76 @@
+import random
+
+# Создаем игровое поле
+board = [['O' for _ in range(10)] for _ in range(10)]
+
+# Размещаем корабли на поле
+def place_ships(board):
+    ships = 5
+    while ships > 0:
+        x = random.randint(0, 9)
+        y = random.randint(0, 9)
+        if board[x][y] == 'O':
+            board[x][y] = 'S'
+            ships -= 1
+
+# Функция для вывода игрового поля
+def print_board(board):
+    for row in board:
+        print(' '.join(row))
+
+# Функция для проверки попадания
+def check_hit(board, x, y):
+    if board[x][y] == 'S':
+        board[x][y] = 'X'
+        return True
+    else:
+        board[x][y] = 'M'
+        return False
+
+# Основной игровой цикл
+def play_game():
+    print("Добро пожаловать в игру Морской бой!")
+    print("У вас и у компьютера по 5 кораблей.")
+    print("Координаты вводятся в формате x y (например, 1 2).")
+    print("Попадание обозначается символом X, мимо - символом M.")
+    print("Удачи!")
+
+    # Размещаем корабли на поле для обоих игроков
+    place_ships(board)
+    computer_board = [['O' for _ in range(10)] for _ in range(10)]
+    place_ships(computer_board)
+
+    # Основной игровой цикл
+    while True:
+        print("\nВаше поле:")
+        print_board(board)
+        print("\nПоле компьютера:")
+        print_board(computer_board)
+
+        # Ход игрока
+        x, y = map(int, input("\nВведите координаты для выстрела: ").split())
+        if check_hit(computer_board, x, y):
+            print("Попадание!")
+        else:
+            print("Мимо!")
+
+        # Проверяем, остались ли корабли у компьютера
+        if sum(row.count('S') for row in computer_board) == 0:
+            print("\nВы победили! Поздравляем!")
+            break
+
+        # Ход компьютера
+        while True:
+            x = random.randint(0, 9)
+            y = random.randint(0, 9)
+            if check_hit(board, x, y):
+                print("Компьютер попал по вашему кораблю!")
+                break
+
+        # Проверяем, остались ли корабли у игрока
+        if sum(row.count('S') for row in board) == 0:
+            print("\nКомпьютер победил! Попробуйте еще раз!")
+            break
+
+# Запускаем игру
+play_game()
